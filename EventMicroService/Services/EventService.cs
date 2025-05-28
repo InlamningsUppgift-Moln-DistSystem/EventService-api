@@ -200,6 +200,11 @@ namespace EventMicroService.Services
             var all = await _eventRepository.GetEventsUserIsAttending(userId);
             return all.Select(e => e.Id);
         }
+        public async Task<IEnumerable<EventResponse>> GetEventsUserIsAttending(string userId)
+        {
+            var events = await _eventRepository.GetEventsUserIsAttending(userId);
+            return events.Select(ToResponse);
+        }
 
     }
 }

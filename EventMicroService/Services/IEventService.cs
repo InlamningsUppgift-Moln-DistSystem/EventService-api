@@ -13,6 +13,7 @@ namespace EventMicroService.Services
         Task<bool> DeleteEventAsync(Guid id, string requesterId);
         Task<EventResponse> UpdateEventAsync(Guid id, string userId, UpdateEventRequest request);
         Task<IEnumerable<Guid>> GetEventIdsUserIsAttending(string userId);
+        Task<IEnumerable<EventResponse>> GetEventsUserIsAttending(string userId);
 
         Task<IEnumerable<EventResponse>> GetEventsByMonthAsync(int year, int month);
         Task<bool> AttendEventAsync(string userId, Guid eventId);

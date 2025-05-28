@@ -72,6 +72,15 @@ namespace EventMicroService.Repositories
                 .Select(a => a.Event)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Event>> GetEventsUserIsAttending(string userId)
+        {
+            return await _context.Attendees
+                .Where(a => a.UserId == userId)
+                .Include(a => a.Event)
+                .ThenInclude(e => e.Attendees)
+                .Select(a => a.Event)
+                .ToListAsync();
+        }
 
     }
 }

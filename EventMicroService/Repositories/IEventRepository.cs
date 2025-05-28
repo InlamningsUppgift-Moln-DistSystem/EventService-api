@@ -16,7 +16,6 @@ namespace EventMicroService.Repositories
         Task AddAttendeeAsync(Attendee attendee);
         Task RemoveAttendeeAsync(Attendee attendee);
         Task<IEnumerable<Event>> GetEventsUserIsAttending(string userId);
-
     }
 
 }

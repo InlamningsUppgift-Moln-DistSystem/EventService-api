@@ -143,6 +143,16 @@ namespace EventMicroService.Controllers
             var ids = await _eventService.GetEventIdsUserIsAttending(userId);
             return Ok(ids); // Returnera lista med GUIDs
         }
+        [HttpGet("my-attending")]
+        [Authorize]
+        public async Task<IActionResult> GetMyAttendingEvents()
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var events = await _eventService.GetEventsUserIsAttending(userId);
+            return Ok(events); // → List<EventResponse>
+        }
 
     }
 }
