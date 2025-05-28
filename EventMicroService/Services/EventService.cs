@@ -25,19 +25,38 @@ namespace EventMicroService.Services
 
         public async Task<EventResponse> CreateEventAsync(string ownerId, CreateEventRequest request)
         {
-            var newEvent = new Event
+            try
             {
-                Title = request.Title,
-                Location = request.Location,
-                StartDate = request.StartDate,
-                OwnerId = ownerId,
-                ImageUrl = request.ImageUrl
-            };
+                var newEvent = new Event
+                {
+                    Title = request.Title,
+                    Location = request.Location,
+                    StartDate = request.StartDate,
+                    OwnerId = ownerId,
+                    ImageUrl = request.ImageUrl,
+                    Attendees = new List<Attendee>() // Viktigt! Undvik null
+                };
 
-            var created = await _eventRepository.CreateAsync(newEvent);
-            var full = await _eventRepository.GetByIdAsync(created.Id);
-            return ToResponse(full);
+                var created = await _eventRepository.CreateAsync(newEvent);
+
+                // Lägg till detta loggobjekt:
+                return new EventResponse
+                {
+                    Id = created.Id,
+                    Title = created.Title,
+                    Location = created.Location,
+                    StartDate = created.StartDate,
+                    OwnerId = created.OwnerId,
+                    AttendeeCount = created.Attendees?.Count ?? 0,
+                    ImageUrl = created.ImageUrl
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("❌ CreateEventAsync crashed: " + ex.Message, ex);
+            }
         }
+
 
         public async Task<IEnumerable<EventResponse>> GetEventsByOwnerAsync(string ownerId)
         {
