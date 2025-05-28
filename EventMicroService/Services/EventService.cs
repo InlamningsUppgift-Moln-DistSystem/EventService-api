@@ -168,13 +168,24 @@ namespace EventMicroService.Services
         public async Task<bool> AttendEventAsync(string userId, Guid eventId)
         {
             var evnt = await _eventRepository.GetByIdAsync(eventId);
-            if (evnt == null || evnt.Attendees.Any(a => a.UserId == userId))
+            if (evnt == null) return false;
+
+            // ⛑️ FIX: Initialisera listan om den är null
+            evnt.Attendees ??= new List<Attendee>();
+
+            if (evnt.Attendees.Any(a => a.UserId == userId))
                 return false;
 
-            evnt.Attendees.Add(new Attendee { UserId = userId, EventId = eventId });
+            evnt.Attendees.Add(new Attendee
+            {
+                UserId = userId,
+                EventId = eventId
+            });
+
             await _eventRepository.SaveChangesAsync();
             return true;
         }
+
 
         public async Task<bool> UnattendEventAsync(string userId, Guid eventId)
         {
