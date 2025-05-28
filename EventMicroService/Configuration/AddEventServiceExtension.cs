@@ -11,9 +11,9 @@ namespace EventMicroService.Configuration
     {
         public static IServiceCollection AddEventServices(this IServiceCollection services, IConfiguration config)
         {
-            // Lägg till DbContext
+            // 🟢 Nu hämtar vi direkt från "DefaultConnection" (matchar Key Vault)
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(config["DefaultConnection"]));
 
             // Repositories
             services.AddScoped<IEventRepository, EventRepository>();
