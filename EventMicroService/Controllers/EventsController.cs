@@ -133,6 +133,16 @@ namespace EventMicroService.Controllers
             return success ? Ok(new { message = "You are no longer attending the event." }) : BadRequest(new { error = "Unable to unattend." });
         }
 
+        [HttpGet("attending")]
+        [Authorize]
+        public async Task<IActionResult> GetAttendingEventIds()
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var ids = await _eventService.GetEventIdsUserIsAttending(userId);
+            return Ok(ids); // Returnera lista med GUIDs
+        }
 
     }
 }

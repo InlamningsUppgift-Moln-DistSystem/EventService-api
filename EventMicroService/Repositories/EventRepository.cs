@@ -65,6 +65,13 @@ namespace EventMicroService.Repositories
             _context.Attendees.Remove(attendee);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Event>> GetEventsUserIsAttending(string userId)
+        {
+            return await _context.Attendees
+                .Where(a => a.UserId == userId)
+                .Select(a => a.Event)
+                .ToListAsync();
+        }
 
     }
 }

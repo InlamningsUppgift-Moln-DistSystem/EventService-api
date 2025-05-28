@@ -195,6 +195,11 @@ namespace EventMicroService.Services
             return true;
         }
 
+        public async Task<IEnumerable<Guid>> GetEventIdsUserIsAttending(string userId)
+        {
+            var all = await _eventRepository.GetEventsUserIsAttending(userId);
+            return all.Select(e => e.Id);
+        }
 
     }
 }
