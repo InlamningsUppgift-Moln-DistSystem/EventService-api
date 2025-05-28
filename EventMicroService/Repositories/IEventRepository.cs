@@ -11,7 +11,7 @@ namespace EventMicroService.Repositories
         Task<IEnumerable<Event>> GetAllByOwnerAsync(string ownerId);
         Task<Event> GetByIdAsync(Guid id);
         Task DeleteAsync(Event evnt);
-
+        Task<IEnumerable<Event>> GetByMonthAsync(int year, int month);
         Task SaveChangesAsync();
     }
 

@@ -48,6 +48,13 @@ namespace EventMicroService.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Event>> GetByMonthAsync(int year, int month)
+        {
+            return await _context.Events
+                .Where(e => e.StartDate.Year == year && e.StartDate.Month == month)
+                .Include(e => e.Attendees)
+                .ToListAsync();
+        }
 
     }
 }

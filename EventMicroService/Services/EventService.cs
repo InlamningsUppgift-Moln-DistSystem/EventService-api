@@ -158,5 +158,13 @@ namespace EventMicroService.Services
             AttendeeCount = e.Attendees?.Count ?? 0,
             ImageUrl = e.ImageUrl
         };
+        public async Task<IEnumerable<EventResponse>> GetEventsByMonthAsync(int year, int month)
+        {
+            var events = await _eventRepository.GetByMonthAsync(year, month);
+            return events
+                .OrderBy(e => e.StartDate)
+                .Select(ToResponse);
+        }
+
     }
 }

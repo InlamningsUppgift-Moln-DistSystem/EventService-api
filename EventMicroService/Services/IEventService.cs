@@ -13,7 +13,8 @@ namespace EventMicroService.Services
         Task<bool> DeleteEventAsync(Guid id, string requesterId);
         Task<EventResponse> UpdateEventAsync(Guid id, string userId, UpdateEventRequest request);
 
-        // 🆕 Lägg till detta:
+        Task<IEnumerable<EventResponse>> GetEventsByMonthAsync(int year, int month);
+
         Task<string> UploadEventImageAsync(string userId, IFormFile file, bool deleteOldImage = false, string? oldImageUrl = null);
     }
 }

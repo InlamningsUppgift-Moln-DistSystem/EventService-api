@@ -95,24 +95,13 @@ namespace EventMicroService.Controllers
         }
 
 
-        //Swagger tests
-        [HttpPost("check-create")]
-        [Authorize]
-        public IActionResult CheckCreate([FromBody] CreateEventRequest request)
+        [HttpGet("month")]
+        public async Task<IActionResult> GetEventsByMonth([FromQuery] int year, [FromQuery] int month)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized();
-
-            return Ok(new
-            {
-                Received = true,
-                userId,
-                request.Title,
-                request.Location,
-                request.StartDate,
-                request.ImageUrl
-            });
+            var events = await _eventService.GetEventsByMonthAsync(year, month);
+            return Ok(events);
         }
+
 
     }
 }
