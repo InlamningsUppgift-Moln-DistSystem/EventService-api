@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// 📁 EventsController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using EventMicroService.DTOs;
 using EventMicroService.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EventMicroService.Controllers
 {
@@ -18,31 +20,28 @@ namespace EventMicroService.Controllers
             _eventService = eventService;
         }
 
-        // GET /api/events/mine
         [HttpGet("mine")]
         [Authorize]
         public async Task<IActionResult> GetMyEvents()
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
             var events = await _eventService.GetEventsByOwnerAsync(userId);
             return Ok(events);
         }
 
-        // POST /api/events
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
             var created = await _eventService.CreateEventAsync(userId, request);
             return CreatedAtAction(nameof(GetEventById), new { id = created.Id }, created);
         }
 
-        // GET /api/events/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEventById(Guid id)
         {
@@ -51,12 +50,11 @@ namespace EventMicroService.Controllers
             return Ok(evnt);
         }
 
-        // DELETE /api/events/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
             var success = await _eventService.DeleteEventAsync(id, userId);

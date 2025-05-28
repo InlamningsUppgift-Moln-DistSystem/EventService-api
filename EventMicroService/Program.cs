@@ -1,20 +1,19 @@
+Ôªø// üìÅ Program.cs
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using EventMicroService.Configuration;
-using EventMicroService.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Ladda Key Vault
+// 1. Load Key Vault
 string keyVaultUrl = builder.Configuration["KeyVaultUrl"];
 builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential());
 
-// 2. JWT Settings frÂn Key Vault + appsettings
+// 2. JWT Settings
 var jwtSecret = builder.Configuration["Jwt-Secret"];
 var jwtIssuer = builder.Configuration["JwtSettings:Issuer"];
 var jwtAudience = builder.Configuration["JwtSettings:Audience"];
@@ -26,7 +25,7 @@ builder.Services.Configure<JwtSettings>(options =>
     options.Audience = jwtAudience;
 });
 
-// 3. DbContext & Event Services
+// 3. Services + DB
 builder.Services.AddEventServices(builder.Configuration);
 
 // 4. CORS
@@ -40,7 +39,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 5. JWT Autentisering
+// 5. Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,7 +90,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// 7. Pipeline
+// 7. Build
 var app = builder.Build();
 
 app.UseSwagger();
@@ -106,12 +105,4 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// ?? Kˆr EF-migration automatiskt vid uppstart (fˆr Azure)
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate(); // Skapar databasen och tabellerna om de saknas
-}
-
 app.Run();
