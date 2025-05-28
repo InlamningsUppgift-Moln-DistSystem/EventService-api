@@ -93,5 +93,26 @@ namespace EventMicroService.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+
+        //Swagger tests
+        [HttpPost("check-create")]
+        [Authorize]
+        public IActionResult CheckCreate([FromBody] CreateEventRequest request)
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            return Ok(new
+            {
+                Received = true,
+                userId,
+                request.Title,
+                request.Location,
+                request.StartDate,
+                request.ImageUrl
+            });
+        }
+
     }
 }
