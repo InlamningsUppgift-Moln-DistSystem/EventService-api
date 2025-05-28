@@ -109,8 +109,17 @@ namespace EventMicroService.Controllers
             var userId = GetUserId();
             if (userId == null) return Unauthorized();
 
-            var success = await _eventService.AttendEventAsync(userId, eventId);
-            return success ? Ok(new { message = "You are now attending the event." }) : BadRequest(new { error = "Unable to attend." });
+            try
+            {
+                var success = await _eventService.AttendEventAsync(userId, eventId);
+                return success
+                    ? Ok(new { message = "You are now attending the event." })
+                    : BadRequest(new { error = "Already attending or event not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         [HttpDelete("{eventId}/attend")]
