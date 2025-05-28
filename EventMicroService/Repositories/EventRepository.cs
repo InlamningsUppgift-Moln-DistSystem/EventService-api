@@ -72,7 +72,7 @@ namespace EventMicroService.Repositories
                 .Select(a => a.Event)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Event>> GetEventsUserIsAttending(string userId)
+        public async Task<IEnumerable<Event>> GetFullEventsUserIsAttending(string userId)
         {
             return await _context.Attendees
                 .Where(a => a.UserId == userId)
@@ -81,6 +81,7 @@ namespace EventMicroService.Repositories
                 .Select(a => a.Event)
                 .ToListAsync();
         }
+
 
     }
 }

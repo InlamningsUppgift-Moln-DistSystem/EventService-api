@@ -150,9 +150,10 @@ namespace EventMicroService.Controllers
             var userId = GetUserId();
             if (userId == null) return Unauthorized();
 
-            var events = await _eventService.GetEventsUserIsAttending(userId);
-            return Ok(events); // → List<EventResponse>
+            var events = await _eventService.GetFullEventsUserIsAttending(userId);
+            return Ok(events);
         }
+
 
     }
 }
