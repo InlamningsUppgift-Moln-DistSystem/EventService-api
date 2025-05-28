@@ -102,6 +102,28 @@ namespace EventMicroService.Controllers
             return Ok(events);
         }
 
+        [HttpPost("{eventId}/attend")]
+        [Authorize]
+        public async Task<IActionResult> AttendEvent(Guid eventId)
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var success = await _eventService.AttendEventAsync(userId, eventId);
+            return success ? Ok(new { message = "You are now attending the event." }) : BadRequest(new { error = "Unable to attend." });
+        }
+
+        [HttpDelete("{eventId}/attend")]
+        [Authorize]
+        public async Task<IActionResult> UnattendEvent(Guid eventId)
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var success = await _eventService.UnattendEventAsync(userId, eventId);
+            return success ? Ok(new { message = "You are no longer attending the event." }) : BadRequest(new { error = "Unable to unattend." });
+        }
+
 
     }
 }

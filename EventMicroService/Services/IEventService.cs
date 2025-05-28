@@ -14,7 +14,8 @@ namespace EventMicroService.Services
         Task<EventResponse> UpdateEventAsync(Guid id, string userId, UpdateEventRequest request);
 
         Task<IEnumerable<EventResponse>> GetEventsByMonthAsync(int year, int month);
-
+        Task<bool> AttendEventAsync(string userId, Guid eventId);
+        Task<bool> UnattendEventAsync(string userId, Guid eventId);
         Task<string> UploadEventImageAsync(string userId, IFormFile file, bool deleteOldImage = false, string? oldImageUrl = null);
     }
 }
