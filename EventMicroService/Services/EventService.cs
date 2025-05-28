@@ -35,7 +35,8 @@ namespace EventMicroService.Services
             };
 
             var created = await _eventRepository.CreateAsync(newEvent);
-            return ToResponse(created);
+            var full = await _eventRepository.GetByIdAsync(created.Id);
+            return ToResponse(full);
         }
 
         public async Task<IEnumerable<EventResponse>> GetEventsByOwnerAsync(string ownerId)
@@ -56,7 +57,6 @@ namespace EventMicroService.Services
             if (evnt == null || evnt.OwnerId != requesterId)
                 return false;
 
-            // Delete image if exists
             if (!string.IsNullOrEmpty(evnt.ImageUrl))
                 await DeleteBlobAsync(evnt.ImageUrl);
 
@@ -74,7 +74,6 @@ namespace EventMicroService.Services
             evnt.Location = request.Location;
             evnt.StartDate = request.StartDate;
 
-            // ta bort gammal bild om ny sätts
             if (!string.IsNullOrEmpty(request.ImageUrl) && evnt.ImageUrl != request.ImageUrl)
             {
                 if (!string.IsNullOrEmpty(evnt.ImageUrl))
@@ -84,7 +83,9 @@ namespace EventMicroService.Services
             }
 
             await _eventRepository.SaveChangesAsync();
-            return ToResponse(evnt);
+
+            var full = await _eventRepository.GetByIdAsync(evnt.Id);
+            return ToResponse(full);
         }
 
         public async Task<string> UploadEventImageAsync(string userId, IFormFile file, bool deleteOldImage = false, string? oldImageUrl = null)
@@ -125,7 +126,7 @@ namespace EventMicroService.Services
                 var blobClient = container.GetBlobClient(blobName);
                 await blobClient.DeleteIfExistsAsync();
             }
-            catch { /* logga ev. fel */ }
+            catch { /* ev. logga fel */ }
         }
 
         private static EventResponse ToResponse(Event e) => new EventResponse
