@@ -10,6 +10,7 @@ namespace EventMicroService.Models
         public string Location { get; set; }
         public DateTime StartDate { get; set; }
         public string OwnerId { get; set; }
+        public string ImageUrl { get; set; }
 
         public ICollection<Attendee> Attendees { get; set; }
     }

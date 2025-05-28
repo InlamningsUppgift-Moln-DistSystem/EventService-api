@@ -10,5 +10,7 @@ namespace EventMicroService.DTOs
         public DateTime StartDate { get; set; }
         public string OwnerId { get; set; }
         public int AttendeeCount { get; set; }
+        public string ImageUrl { get; set; }
+
     }
 }

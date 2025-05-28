@@ -13,5 +13,9 @@ namespace EventMicroService.DTOs
 
         [Required]
         public DateTime StartDate { get; set; }
+
+        [Url]
+        public string ImageUrl { get; set; }
+
     }
 }

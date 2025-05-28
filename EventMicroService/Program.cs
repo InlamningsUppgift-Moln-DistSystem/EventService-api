@@ -1,6 +1,6 @@
-﻿// 📁 Program.cs
-using Azure.Extensions.AspNetCore.Configuration.Secrets;
+﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
+using Azure.Storage.Blobs;
 using EventMicroService.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -25,10 +25,13 @@ builder.Services.Configure<JwtSettings>(options =>
     options.Audience = jwtAudience;
 });
 
-// 3. Services + DB
+// 3. Azure Blob Storage
+builder.Services.AddSingleton(new BlobServiceClient(builder.Configuration["BlobConnectionString"]));
+
+// 4. Services + DB
 builder.Services.AddEventServices(builder.Configuration);
 
-// 4. CORS
+// 5. CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -39,7 +42,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 5. Authentication
+// 6. Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,7 +62,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 6. Swagger
+// 7. Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -90,7 +93,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// 7. Build
+// 8. Build and Run
 var app = builder.Build();
 
 app.UseSwagger();

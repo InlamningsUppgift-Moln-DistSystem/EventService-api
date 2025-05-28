@@ -44,5 +44,10 @@ namespace EventMicroService.Repositories
             _context.Events.Remove(evnt);
             await _context.SaveChangesAsync();
         }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
