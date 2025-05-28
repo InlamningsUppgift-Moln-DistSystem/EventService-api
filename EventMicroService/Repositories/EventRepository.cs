@@ -55,6 +55,16 @@ namespace EventMicroService.Repositories
                 .Include(e => e.Attendees)
                 .ToListAsync();
         }
+        public async Task AddAttendeeAsync(Attendee attendee)
+        {
+            _context.Attendees.Add(attendee);
+            await _context.SaveChangesAsync();
+        }
+        public async Task RemoveAttendeeAsync(Attendee attendee)
+        {
+            _context.Attendees.Remove(attendee);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

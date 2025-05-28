@@ -13,6 +13,9 @@ namespace EventMicroService.Repositories
         Task DeleteAsync(Event evnt);
         Task<IEnumerable<Event>> GetByMonthAsync(int year, int month);
         Task SaveChangesAsync();
+        Task AddAttendeeAsync(Attendee attendee);
+        Task RemoveAttendeeAsync(Attendee attendee);
+
     }
 
 }

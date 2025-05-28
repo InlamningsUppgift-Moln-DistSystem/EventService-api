@@ -9,6 +9,7 @@ using EventMicroService.DTOs;
 using EventMicroService.Models;
 using EventMicroService.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventMicroService.Services
 {
@@ -170,19 +171,16 @@ namespace EventMicroService.Services
             var evnt = await _eventRepository.GetByIdAsync(eventId);
             if (evnt == null) return false;
 
-            // ⛑️ FIX: Initialisera listan om den är null
-            evnt.Attendees ??= new List<Attendee>();
+            var already = evnt.Attendees?.Any(a => a.UserId == userId) ?? false;
+            if (already) return false;
 
-            if (evnt.Attendees.Any(a => a.UserId == userId))
-                return false;
-
-            evnt.Attendees.Add(new Attendee
+            var attendee = new Attendee
             {
                 UserId = userId,
                 EventId = eventId
-            });
+            };
 
-            await _eventRepository.SaveChangesAsync();
+            await _eventRepository.AddAttendeeAsync(attendee);
             return true;
         }
 
@@ -193,10 +191,10 @@ namespace EventMicroService.Services
             var attendee = evnt?.Attendees.FirstOrDefault(a => a.UserId == userId);
             if (attendee == null) return false;
 
-            evnt.Attendees.Remove(attendee);
-            await _eventRepository.SaveChangesAsync();
+            await _eventRepository.RemoveAttendeeAsync(attendee);
             return true;
         }
+
 
     }
 }
